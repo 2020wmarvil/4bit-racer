@@ -17,8 +17,20 @@
 #endif
 
 void titlescreen(SDL_Renderer *ren);
+SDL_Rect* createRect(int x, int y, int w, int h);
 bool withinRect(int x, int y, SDL_Rect rect);
 void game(SDL_Renderer *ren);
+
+const char cartemplate[][4]={
+                      {1,2,2,1},
+                      {2,2,2,2},
+                      {0,0,0,0},
+                      {0,2,2,0},
+                      {2,2,2,2},
+                      {0,0,0,0},
+                      {2,2,2,2},
+                      {2,2,2,2}
+                    };
 
 int main(int argc, char** argv) {
   SDL_Init(SDL_INIT_VIDEO);
@@ -32,15 +44,19 @@ int main(int argc, char** argv) {
   return 0;
 }
 void game(SDL_Renderer *ren) {
-  SDL_Surface* car = SDL_CreateRGBSurface(0,4,8,32,rmask,gmask,bmask,amask); //todo actually load in and render the car
+  SDL_Surface* carsurface = SDL_LoadBMP("../assets/Car.bmp"); //todo clear this stuff at the end
+  SDL_Texture* cartex = SDL_CreateTextureFromSurface(ren,carsurface);
+  SDL_Surface* mapsurface = SDL_LoadBMP("../assets/map.bmp");
+  SDL_Texture* maptex = SDL_CreateTextureFromSurface(ren,mapsurface);
   while(true) {
     SDL_Event event;
     if(SDL_PollEvent(&event)) {
       if(event.type==SDL_QUIT) {SDL_PushEvent(&event);return;}
       if(event.type==SDL_KEYDOWN) return;
     }
-    SDL_SetRenderDrawColor(ren,255,0,0,255);
+    SDL_SetRenderDrawColor(ren,0,0,0,255);
     SDL_RenderClear(ren);
+    SDL_RenderCopy(ren,cartex,createRect(0,0,4,8),createRect(316,232,8,16));
     SDL_RenderPresent(ren);
   }
 }
@@ -61,4 +77,9 @@ void titlescreen(SDL_Renderer *ren) {
 }
 bool withinRect(int x, int y, SDL_Rect rect) {
   return (x>rect.x&&x<(rect.x+rect.w))&&(y>rect.y&&y<(rect.y+rect.h));
+}
+SDL_Rect* createRect(int x, int y, int w, int h) {
+  SDL_Rect *rect=new SDL_Rect;
+  rect->x=x;rect->y=y;rect->w=w;rect->h=h;
+  return rect;
 }
