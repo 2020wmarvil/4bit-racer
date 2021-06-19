@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "../include/Entity.hpp"
+
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
