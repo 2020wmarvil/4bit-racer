@@ -13,12 +13,13 @@ private:
   uint16_t id;
 
   std::vector<Component*> components;
-  Transform *transform;
 public:
+  Transform *transform;
   Entity() {
     id = GLOBAL_ID_COUNTER++;
     transform = new Transform();
   }
+
   void AddComponent(Component *component) {
     components.push_back(component);
   }
@@ -33,6 +34,7 @@ public:
     return false;
   }
   Component* GetComponent(ComponentType type) {
+    if(type==TRANSFORM) return transform;
     for(Component* i : components) {
       if(i->type==type) return i;
     }
