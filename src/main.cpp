@@ -2,10 +2,19 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/Entity.hpp"
-
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
+
+#include "../include/Utilities.hpp"
+#include "../include/Entity.hpp"
+#include "../include/Components.hpp"
+#include "../include/EventHandler.hpp"
+#include "../include/Physics.hpp"
+#include "../include/Renderer.hpp"
+
+const int SCREEN_FPS = 30;
+const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     Uint32 rmask = 0xff000000;
     Uint32 gmask = 0x00ff0000;
@@ -19,8 +28,6 @@
 #endif
 
 void titlescreen(SDL_Renderer *ren);
-SDL_Rect* createRect(int x, int y, int w, int h);
-bool withinRect(int x, int y, SDL_Rect rect);
 void game(SDL_Renderer *ren);
 
 const char cartemplate[][4]={
@@ -34,7 +41,7 @@ const char cartemplate[][4]={
                       {2,2,2,2}
                     };
 
-int main(int argc, char** argv) {
+int main(/*int argc, char** argv*/) {
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Window *win = SDL_CreateWindow("4Bit Racer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
   SDL_Renderer *ren = SDL_GetRenderer(win);
@@ -45,21 +52,71 @@ int main(int argc, char** argv) {
   SDL_Quit();
   return 0;
 }
+
 void game(SDL_Renderer *ren) {
-  SDL_Surface* carsurface = SDL_LoadBMP("../assets/Car.bmp"); //todo clear this stuff at the end
-  SDL_Texture* cartex = SDL_CreateTextureFromSurface(ren,carsurface);
-  SDL_Surface* mapsurface = SDL_LoadBMP("../assets/map.bmp");
-  SDL_Texture* maptex = SDL_CreateTextureFromSurface(ren,mapsurface);
+  struct Params *params = new struct Params;
+
+  PhysicsSim *sim = new PhysicsSim();
+  Renderer *renderer = new Renderer(ren);
+
+  // begin entity creation
+  Entity *car = new Entity();
+  Texture *carTexture = new Texture(
+    SDL_CreateTextureFromSurface(ren, SDL_LoadBMP("../assets/Car.bmp")),
+    createRect(316, 232, 8, 16)
+  );
+  carTexture->SetLayer(1);
+  carTexture->SetScale(10);
+  car->AddComponent(carTexture);
+  renderer->AddEntity(car);
+  Rigidbody *carRB = new Rigidbody();
+  car->AddComponent(carRB);
+  sim->AddEntity(car);
+
+  Entity *map = new Entity();
+  Texture *mapTexture = new Texture(
+    SDL_CreateTextureFromSurface(ren, SDL_LoadBMP("../assets/map.bmp")),
+    createRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+  );
+  mapTexture->SetScale(10);
+  map->AddComponent(mapTexture);
+  renderer->AddEntity(map);
+  // end entity creation
+
+  int previousTicks = SDL_GetTicks();
+
   while(true) {
     SDL_Event event;
-    if(SDL_PollEvent(&event)) {
+    while(SDL_PollEvent(&event)) {
       if(event.type==SDL_QUIT) {SDL_PushEvent(&event);return;}
-      if(event.type==SDL_KEYDOWN) return;
+      if(event.type==SDL_KEYDOWN||event.type==SDL_KEYUP) {
+        switch(event.key.keysym.sym) {
+          case SDLK_w:
+            params->W_PRESSED=event.type==SDL_KEYDOWN;
+            break;
+          case SDLK_a:
+            params->A_PRESSED=event.type==SDL_KEYDOWN;
+            break;
+          case SDLK_s:
+            params->S_PRESSED=event.type==SDL_KEYDOWN;
+            break;
+          case SDLK_d:
+            params->D_PRESSED=event.type==SDL_KEYDOWN;
+            break;
+          default:
+            return;
+        }
+      }
     }
-    SDL_SetRenderDrawColor(ren,0,0,0,255);
-    SDL_RenderClear(ren);
-    SDL_RenderCopy(ren,cartex,createRect(0,0,4,8),createRect(316,232,8,16));
-    SDL_RenderPresent(ren);
+
+    sim->Update(params);
+
+    renderer->Render();
+
+    // limit framerate
+    int frameTicks = SDL_GetTicks() - previousTicks;
+    if(frameTicks < SCREEN_TICKS_PER_FRAME) SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
+    previousTicks = SDL_GetTicks();
   }
 }
 void titlescreen(SDL_Renderer *ren) {
@@ -76,12 +133,4 @@ void titlescreen(SDL_Renderer *ren) {
     SDL_RenderFillRect(ren, &button);
     SDL_RenderPresent(ren);
   }
-}
-bool withinRect(int x, int y, SDL_Rect rect) {
-  return (x>rect.x&&x<(rect.x+rect.w))&&(y>rect.y&&y<(rect.y+rect.h));
-}
-SDL_Rect* createRect(int x, int y, int w, int h) {
-  SDL_Rect *rect=new SDL_Rect;
-  rect->x=x;rect->y=y;rect->w=w;rect->h=h;
-  return rect;
 }
