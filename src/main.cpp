@@ -2,8 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_SIZE 480
 
 #include "../include/Utilities.hpp"
 #include "../include/Entity.hpp"
@@ -42,8 +41,10 @@ const char cartemplate[][4]={
                     };
 
 int main(/*int argc, char** argv*/) {
+  Uint32 windowFlags = 0;
+
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_Window *win = SDL_CreateWindow("4Bit Racer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+  SDL_Window *win = SDL_CreateWindow("4Bit Racer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE, SCREEN_SIZE, windowFlags);
   SDL_Renderer *ren = SDL_GetRenderer(win);
 	if(!ren) ren = SDL_CreateRenderer(win, -1, 0);
 
@@ -66,19 +67,21 @@ void game(SDL_Renderer *ren) {
     createRect(316, 232, 8, 16)
   );
   carTexture->SetLayer(1);
-  carTexture->SetScale(10);
+  carTexture->SetScale(2.5);
   car->AddComponent(carTexture);
   renderer->AddEntity(car);
   Rigidbody *carRB = new Rigidbody();
   car->AddComponent(carRB);
   sim->AddEntity(car);
 
+  car->transform->data.rotation = 45;
+
   Entity *map = new Entity();
   Texture *mapTexture = new Texture(
     SDL_CreateTextureFromSurface(ren, SDL_LoadBMP("../assets/map.bmp")),
-    createRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+    createRect(0, 0, SCREEN_SIZE, SCREEN_SIZE)
   );
-  mapTexture->SetScale(10);
+  mapTexture->SetScale(30);
   map->AddComponent(mapTexture);
   renderer->AddEntity(map);
   // end entity creation
@@ -117,6 +120,7 @@ void game(SDL_Renderer *ren) {
     int frameTicks = SDL_GetTicks() - previousTicks;
     if(frameTicks < SCREEN_TICKS_PER_FRAME) SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
     previousTicks = SDL_GetTicks();
+    std::cout<< *(Transform*)((*car).GetComponent(TRANSFORM)) <<std::endl;
   }
 }
 void titlescreen(SDL_Renderer *ren) {
