@@ -34,10 +34,11 @@ class Renderer {
             SDL_QueryTexture(texdata->tex,NULL,NULL,&rect.w,&rect.h);
             rect.w*=texdata->scale;
             rect.h*=texdata->scale;
-            rect.x=transformdata->posX-rect.w/2;
-            rect.y=transformdata->posY-rect.h/2;
-            rect.y=SCREEN_HEIGHT-rect.y;
-            SDL_RenderCopy(ren,texdata->tex,NULL,&rect);
+            rect.x=SCREEN_SIZE*(transformdata->posX+100)/200-rect.w/2;
+            rect.y=SCREEN_SIZE*(transformdata->posY+100)/200+rect.h/2;
+            rect.y=SCREEN_SIZE-rect.y;
+            //SDL_RenderCopy(ren,texdata->tex,NULL,&rect);
+            SDL_RenderCopyEx(ren,texdata->tex,NULL,&rect,transformdata->rotation,NULL,SDL_FLIP_NONE);
             empty=false;
           }
         }
