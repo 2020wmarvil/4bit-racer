@@ -21,7 +21,7 @@ class Transform : public Component { //Basic location data for every Entity
 public:
   struct TransformData {
     float posX, posY;
-    float rotation;
+    float rotation; //degrees
   };
   struct TransformData data;
 
@@ -82,7 +82,21 @@ class Texture : public Component { // Basic rendering data
 class Rigidbody : public Component { // Basic physics data
   public:
     struct RigidbodyData {
+      float velocityX;
+      float velocityY;
+      float accelerationX;
+      float accelerationY;
+      float force;
 
+      float angularVelocity;
+      float angularAcceleration;
+      float torque;
+
+      float horsePower;
+
+      float drag;
+      float angularDrag;
+      float mass;
     };
     struct RigidbodyData data;
 
