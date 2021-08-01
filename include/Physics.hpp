@@ -43,12 +43,12 @@ class PhysicsSim {
         rb->velocityY += rb->accelerationY;
 
         transform->posX += rb->velocityX;
-        transform->posY += rb->velocityY; //TODO something is not being initialized properly and is causing the car to start way off the map
+        transform->posY += rb->velocityY;
 
-        // rb->angularAcceleration = rb->torque;
-        // rb->angulaaaaaaaaaaab rVelocity += rb->angularAcceleration;
+        rb->angularAcceleration = rb->torque;
+        rb->angularVelocity += rb->angularAcceleration;
 
-        //transform->rotation += rb->angularVelocity;
+        transform->rotation += rb->angularVelocity;
       }
     }
 };
