@@ -102,10 +102,34 @@ class Rigidbody : public Component { // Basic physics data
 
     Rigidbody() {
       type=RIGIDBODY;
+      data.velocityX=0;
+      data.velocityY=0;
+      data.accelerationX=0;
+      data.accelerationY=0;
+      data.force=0;
+      data.angularVelocity=0;
+      data.angularAcceleration=0;
+      data.torque=0;
+      data.horsePower=0;
+      data.drag=0;
+      data.angularDrag=0;
+      data.mass=1;
     }
 
     Rigidbody(SDL_Texture *texture, SDL_Rect *rectangle) {
       type=RIGIDBODY;
+      data.velocityX=0;
+      data.velocityY=0;
+      data.accelerationX=0;
+      data.accelerationY=0;
+      data.force=0;
+      data.angularVelocity=0;
+      data.angularAcceleration=0;
+      data.torque=0;
+      data.horsePower=0;
+      data.drag=0;
+      data.angularDrag=0;
+      data.mass=1;
     }
     void* GetData() {return (void*)&data;}
 };
