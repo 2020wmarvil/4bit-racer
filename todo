@@ -1,0 +1,16 @@
+Subpixel precision rotation rendering
+Add sound system
+Finsh imput handling design
+Continue work on physics
+  make turning dependent on speed
+  more accurate physics derivation
+Rendering camera system
+Gameplay mechanics
+  start/finish line
+  lap tracking
+  deincentivize cheating (track cutting)
+  basic gameplay (singleplayer time trials/multiplayer racing)
+Networking
+Postprocessing sytem
+"Scripting" system
+Homebrew🍺
