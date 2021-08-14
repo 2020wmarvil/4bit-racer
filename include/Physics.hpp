@@ -22,21 +22,9 @@ class PhysicsSim {
       for(Entity* a : entities) {
         struct Rigidbody::RigidbodyData* rb=(struct Rigidbody::RigidbodyData*)a->GetComponent(RIGIDBODY)->GetData();
         struct Transform::TransformData* transform=(struct Transform::TransformData*)a->GetComponent(TRANSFORM)->GetData();
-<<<<<<< HEAD
-        
+
         float dirX = sin(transform->rotation * M_PI / 180);
         float dirY = cos(transform->rotation * M_PI / 180);
-=======
-
-        float carForceMax = 0.01;
-        float carTorqueMax = 0.01;
-
-        float newForce = 0;
-        float newTorque = 0;
-
-        float dirX = sin(DegreesToRadians(transform->rotation));
-        float dirY = cos(DegreesToRadians(transform->rotation));
->>>>>>> aa3fbc22a63446289f8bf463338063beeebe3829
 
         rb->accelerationX = rb->force * dirX;
         rb->accelerationY = rb->force * dirY;
