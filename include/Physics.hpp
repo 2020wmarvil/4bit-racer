@@ -59,7 +59,7 @@ class PhysicsSim {
         rb->velocityX = speed * dirX;
         rb->velocityY = speed * dirY;
 
-        std::cout << "Velocity: (" rb->velocityX << ", " << rb->velocityY << ") - Magnitude: " << sqrt(rb->velocityX * rb->velocityX + rb->velocityY * rb->velocityY) << std::endl;
+        std::cout << "Velocity: (" << rb->velocityX << ", " << rb->velocityY << ") - Magnitude: " << sqrt(rb->velocityX * rb->velocityX + rb->velocityY * rb->velocityY) << std::endl;
 
         transform->posX += rb->velocityX;
         transform->posY += rb->velocityY;
