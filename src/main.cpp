@@ -8,6 +8,7 @@
 #include "../include/Entity.hpp"
 #include "../include/Components.hpp"
 #include "../include/EventHandler.hpp"
+#include "../include/World.hpp"
 #include "../include/Physics.hpp"
 #include "../include/Renderer.hpp"
 
@@ -57,11 +58,13 @@ int main(/*int argc, char** argv*/) {
 void game(SDL_Renderer *ren) {
   struct Params *params = new struct Params;
 
+  EventHandler *inputHandler = new EventHandler() ;
+  World *world = new World();
   PhysicsSim *sim = new PhysicsSim();
   Renderer *renderer = new Renderer(ren);
 
   // begin entity creation
-  Entity *car = new Entity();
+  Entity *car = new Entity("PlayerCar");
   Texture *carTexture = new Texture(
     SDL_CreateTextureFromSurface(ren, SDL_LoadBMP("../assets/Car.bmp")),
     createRect(316, 232, 8, 16)
@@ -72,6 +75,7 @@ void game(SDL_Renderer *ren) {
   renderer->AddEntity(car);
   Rigidbody *carRB = new Rigidbody();
   car->AddComponent(carRB);
+  world->AddEntity(car);
   sim->AddEntity(car);
 
   car->transform->data.rotation = 45;
@@ -89,29 +93,9 @@ void game(SDL_Renderer *ren) {
   int previousTicks = SDL_GetTicks();
 
   while(true) {
-    SDL_Event event;
-    while(SDL_PollEvent(&event)) {
-      if(event.type==SDL_QUIT) {SDL_PushEvent(&event);return;}
-      if(event.type==SDL_KEYDOWN||event.type==SDL_KEYUP) {
-        switch(event.key.keysym.sym) {
-          case SDLK_w:
-            params->W_PRESSED=event.type==SDL_KEYDOWN;
-            break;
-          case SDLK_a:
-            params->A_PRESSED=event.type==SDL_KEYDOWN;
-            break;
-          case SDLK_s:
-            params->S_PRESSED=event.type==SDL_KEYDOWN;
-            break;
-          case SDLK_d:
-            params->D_PRESSED=event.type==SDL_KEYDOWN;
-            break;
-        }
-      }
-    }
-
+    if (!inputHandler->PollInput(params)) return;
+    world->Update(params);
     sim->Update(params);
-
     renderer->Render();
 
     // limit framerate
