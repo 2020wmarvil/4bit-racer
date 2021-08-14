@@ -14,7 +14,7 @@ enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE };
 class Component {
   public:
     ComponentType type;
-    virtual void* GetData() {} //returns the component data, usually a type of struct
+    virtual void* GetData() {return nullptr;} //returns the component data, usually a type of struct
 };
 
 class Transform : public Component { //Basic location data for every Entity
