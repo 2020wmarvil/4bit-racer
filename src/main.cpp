@@ -106,8 +106,6 @@ void game(SDL_Renderer *ren) {
           case SDLK_d:
             params->D_PRESSED=event.type==SDL_KEYDOWN;
             break;
-          default:
-            return;
         }
       }
     }
