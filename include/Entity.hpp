@@ -2,6 +2,7 @@
 #define GAME_ENTITY
 
 #include <vector>
+#include <string>
 #include <stdint.h>
 
 #include "Components.hpp"
@@ -15,9 +16,18 @@ private:
   std::vector<Component*> components;
 public:
   Transform *transform;
+  std::string name;
+
   Entity() {
     id = GLOBAL_ID_COUNTER++;
     transform = new Transform();
+    name = "Entity_" + std::to_string(id);
+  }
+
+  Entity(std::string name) {
+    id = GLOBAL_ID_COUNTER++;
+    transform = new Transform();
+    this->name = name;
   }
 
   void AddComponent(Component *component) {
