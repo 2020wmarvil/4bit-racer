@@ -1,6 +1,9 @@
 Subpixel precision rotation rendering
+math library
+Find values for coefficients of friction
 Add sound system
 Finsh imput handling design
+  controller support
 Continue work on physics
   make turning dependent on speed
   more accurate physics derivation
