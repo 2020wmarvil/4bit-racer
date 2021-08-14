@@ -6,6 +6,7 @@
 #include "Entity.hpp"
 #include "Components.hpp"
 #include "EventHandler.hpp"
+#include "Math.hpp"
 
 class PhysicsSim {
   private:
@@ -28,8 +29,8 @@ class PhysicsSim {
         float newForce = 0;
         float newTorque = 0;
 
-        float dirX = sin(transform->rotation * M_PI / 180);
-        float dirY = cos(transform->rotation * M_PI / 180);
+        float dirX = sin(DegreesToRadians(transform->rotation));
+        float dirY = cos(DegreesToRadians(transform->rotation));
 
         std::cout << "Direction: (" << dirX << ", " << dirY << ")\n";
 
