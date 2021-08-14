@@ -1,18 +1,18 @@
-Subpixel precision rotation rendering
 math library
-Find values for coefficients of friction
 Add sound system
-Finsh imput handling design
-  controller support
+controller support
 Continue work on physics
-  make turning dependent on speed
   more accurate physics derivation
+  Find values for coefficients of friction
 Rendering camera system
 Gameplay mechanics
   start/finish line
   lap tracking
   deincentivize cheating (track cutting)
   basic gameplay (singleplayer time trials/multiplayer racing)
+  up/down shifting -> (reverse, neutral, 1, 2, 3, 4)
+ui library
+  lap number, lap timer, gear indication
 Networking
 Postprocessing sytem
 "Scripting" system
