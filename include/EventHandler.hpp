@@ -14,6 +14,9 @@ struct Params {
   bool LEFT_PRESSED   = false;
   bool DOWN_PRESSED   = false;
   bool RIGHT_PRESSED  = false;
+
+  float ANALOG_Y = 0;
+  float ANALOG_X = 0;
 };
 
 class EventHandler {
@@ -26,7 +29,7 @@ public:
     while(SDL_PollEvent(&event)) {
       if(event.type == SDL_QUIT) { SDL_PushEvent(&event); return false;}
 
-      if(event.type == SDL_KEYDOWN||event.type==SDL_KEYUP) {
+      if(event.type == SDL_KEYDOWN || event.type==SDL_KEYUP) {
         switch(event.key.keysym.sym) {
           case SDLK_w:
             params->W_PRESSED=event.type==SDL_KEYDOWN;
