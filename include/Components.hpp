@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE };
+enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE, CAMERA };
 
 /* Parent class of all Components
  * Holds a type to refer to the subclass type
@@ -130,6 +130,34 @@ class Rigidbody : public Component { // Basic physics data
       data.drag=0;
       data.angularDrag=0;
       data.mass=1;
+    }
+    void* GetData() {return (void*)&data;}
+};
+
+class Camera : public Component { // Camera component
+  public:
+    struct CameraData {
+      void *followTarget; //Entity to follow, Renderer will copy transform data from this entity to the camera's transform
+      // viewport width and height + x and y defined in percentage of SCREEN_WIDTH and SCREEN_HEIGHT
+      float viewportWidth;
+      float viewportHeight;
+      float viewportX;
+      float viewportY;
+      // lens width and height defined in world units
+      float lensWidth;
+      float lensHeight;
+    };
+    struct CameraData data;
+
+    Camera() {
+      type=CAMERA;
+      data.followTarget=nullptr;
+      data.viewportWidth=1;
+      data.viewportHeight=1;
+      data.viewportX=0;
+      data.viewportY=0;
+      data.lensWidth=200;
+      data.lensHeight=200;
     }
     void* GetData() {return (void*)&data;}
 };
