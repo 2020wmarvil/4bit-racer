@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE, CAMERA };
+enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE, CAMERA, AUDIO };
 
 /* Parent class of all Components
  * Holds a type to refer to the subclass type
@@ -161,4 +161,20 @@ class Camera : public Component { // Camera component
     }
     void* GetData() {return (void*)&data;}
 };
+/*
+class Audio : public Component { // Audio source component
+  public:
+    struct AudioData {
+      Channel *channel; // holds frequency and waveform data
+      bool spatial; //whether or not the audio decays over distance
+      DecayCharacteristics *decay;
+    };
+    struct AudioData data;
+
+    Audio() {
+      type=AUDIO;
+    }
+    void* GetData() {return (void*)&data;}
+};
+*/
 #endif
