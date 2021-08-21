@@ -4,6 +4,7 @@ Math library
 Controller support
 Rendering camera system
   minimap
+UI - text
 Add sound system
 Continue work on physics
   more accurate physics derivation
