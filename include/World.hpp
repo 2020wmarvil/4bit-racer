@@ -40,7 +40,7 @@ class World {
         //if (params->A_PRESSED) newTorque -= carTorqueMax;
         if (params->D_PRESSED) rb->angularVelocity = 1;
         if (params->A_PRESSED) rb->angularVelocity = -1;
-        if (params->D_PRESSED && params->A_PRESSED) {
+        if (!params->D_PRESSED && !params->A_PRESSED) {
           rb->angularVelocity = 0;
         }
 
