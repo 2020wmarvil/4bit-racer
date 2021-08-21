@@ -11,6 +11,7 @@
 #include "../include/World.hpp"
 #include "../include/Physics.hpp"
 #include "../include/Renderer.hpp"
+#include "../include/UI_Elements.hpp"
 
 const int SCREEN_FPS = 30;
 const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
@@ -41,6 +42,8 @@ const char cartemplate[][4]={
                       {2,2,2,2}
                     };
 
+struct Params *params = new struct Params;
+
 int main(/*int argc, char** argv*/) {
   Uint32 windowFlags = 0;
 
@@ -56,8 +59,6 @@ int main(/*int argc, char** argv*/) {
 }
 
 void game(SDL_Renderer *ren) {
-  struct Params *params = new struct Params;
-
   EventHandler *inputHandler = new EventHandler() ;
   World *world = new World();
   PhysicsSim *sim = new PhysicsSim();
@@ -94,7 +95,7 @@ void game(SDL_Renderer *ren) {
 
   while(true) {
     if (!inputHandler->PollInput(params)) return;
-    world->Update(params);
+    if (!world->Update(params))return;
     sim->Update(params);
     renderer->Render();
 
@@ -106,17 +107,49 @@ void game(SDL_Renderer *ren) {
   }
 }
 void titlescreen(SDL_Renderer *ren) {
-  SDL_Rect button;button.x=300;button.y=230;button.w=40;button.h=20;
+  EventHandler *inputHandler = new EventHandler() ;
+  World *world = new World();
+  Renderer *renderer = new Renderer(ren);
+
+  // begin element creation
+  SDL_Rect button;button.x=220;button.y=230;button.w=40;button.h=20;
+  Button start(&button);
+  std::function<void()> call=[ren](){ game(ren);};
+  std::function<void()> enter=[](){ std::cout << "on enter" << std::endl; };
+  std::function<void()> exit=[](){ std::cout << "on exit" << std::endl; };
+  std::function<void()> release=[](){ std::cout << "on release" << std::endl; };
+  start.SetOnMouseDown(call);
+  start.SetOnMouseEnter(enter);
+  start.SetOnMouseExit(exit);
+  start.SetOnMouseUp(release);
+  world->AddButton(&start);
+  // end element creation
+
+  // begin entity creation
+  Entity *ui = new Entity("TitlescreenCanvas");
+  Canvas *canvas = new Canvas();
+  canvas->AddElement(&start);
+  ui->AddComponent(canvas);
+  renderer->AddCanvas(canvas);
+  // end entity creation
+
+  int previousTicks = SDL_GetTicks();
+
   while(true) {
-    SDL_Event event;
-    if(SDL_PollEvent(&event)) {//event handling todo: clean it up a bit
-      if(event.type==SDL_QUIT) {SDL_PushEvent(&event);return;}
-      if(event.type==SDL_MOUSEBUTTONDOWN&&event.button.button==SDL_BUTTON_LEFT&&withinRect(event.button.x,event.button.y,button)) game(ren);
-    }
-    SDL_SetRenderDrawColor(ren,0,0,0,255);
-    SDL_RenderClear(ren);
-    SDL_SetRenderDrawColor(ren,255,255,255,255);
-    SDL_RenderFillRect(ren, &button);
-    SDL_RenderPresent(ren);
+    if (!inputHandler->PollInput(params)) return;
+    world->Update(params);
+    renderer->Render();
+
+    // limit framerate
+    int frameTicks = SDL_GetTicks() - previousTicks;
+    if(frameTicks < SCREEN_TICKS_PER_FRAME) SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
+    previousTicks = SDL_GetTicks();
   }
+
+  delete(params);
+  delete(inputHandler);
+  delete(world);
+  delete(renderer);
+
+  game(ren);
 }

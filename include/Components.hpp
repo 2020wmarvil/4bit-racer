@@ -4,8 +4,12 @@
 #include <SDL2/SDL.h>
 
 #include <iostream>
+#include <vector>
+#include <string>
 
-enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE, CAMERA, AUDIO };
+#include "UI_Elements.hpp"
+
+enum ComponentType { TRANSFORM, RIGIDBODY, TEXTURE, CAMERA, AUDIO, CANVAS };
 
 /* Parent class of all Components
  * Holds a type to refer to the subclass type
@@ -161,6 +165,7 @@ class Camera : public Component { // Camera component
     }
     void* GetData() {return (void*)&data;}
 };
+
 /*
 class Audio : public Component { // Audio source component
   public:
@@ -177,4 +182,26 @@ class Audio : public Component { // Audio source component
     void* GetData() {return (void*)&data;}
 };
 */
+
+class Canvas : public Component { //Canvas component for ui and such
+  public:
+    struct CanvasData {
+      std::vector<UI_Element*> elements;
+      bool enabled;
+    };
+    struct CanvasData data;
+
+    Canvas() {
+      type=CANVAS;
+      data.enabled = true;
+    }
+
+    void AddElement(UI_Element *element) { data.elements.push_back(element); }
+    void SetEnabled(bool isEnabled) { data.enabled=isEnabled; }
+    bool IsEnabled() { return data.enabled; }
+    std::vector<UI_Element*> GetElements() { return data.elements; }
+    void* GetData() {return (void*)&data;}
+};
+
+
 #endif

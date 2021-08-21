@@ -1,29 +1,25 @@
 
-- Current Tasks -
+- In Progress -
 Math library
 Controller support
 Rendering camera system
   minimap
-ui library
-  lap number, lap timer, gear indication
 Add sound system
-
-
-
-
 Continue work on physics
   more accurate physics derivation
   Find values for coefficients of friction
 
-- Later Tasks -
+- Future Tasks -
 Gameplay mechanics
   start/finish line
   lap tracking
   deincentivize cheating (track cutting)
   basic gameplay (singleplayer time trials/multiplayer racing)
   up/down shifting -> (reverse, neutral, 1, 2, 3, 4)
+  ui elements - lap number, lap timer, gear indication
 Networking
 Postprocessing system
+Particle systems
 "Scripting" system
 Homebrew🍺
   3ds

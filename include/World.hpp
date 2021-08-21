@@ -7,23 +7,62 @@
 
 #include "EventHandler.hpp"
 #include "Entity.hpp"
+#include "UI_Elements.hpp"
 
 class World {
   private:
     std::vector<Entity*> entities;
+    std::vector<Button*> buttons;
   public:
     World() { }
 
     void AddEntity(Entity *entity) {
       entities.push_back(entity);
     }
+    void AddButton(Button *button) {
+      buttons.push_back(button);
+    }
 
-    void Update(struct Params *params) {
+    bool Update(struct Params *params) {
+      if (params->ESC_PRESSED) {
+        return false;
+      }
+
       for(Entity* entity : entities) {
         if (entity->name == "PlayerCar") {
           ProcessPlayerInput(params, entity);
         }
       }
+
+      // if button is not working, check if it is scaled, because that is not supported
+      for(Button* button : buttons) {
+        if (!button->data.interactable) continue;
+
+        int x = params->MOUSE_X;
+        int y = params->MOUSE_Y;
+
+        SDL_Rect *rect = button->rect;
+
+        if (x > rect->x && y > rect->y && x < rect->x + rect->w && y < rect->y + rect->h) {
+          if (!button->data.hovered) {
+            button->data.hovered = true;
+            if (button->data.OnMouseEnter != nullptr) button->data.OnMouseEnter();
+          } else {
+            if (params->LEFT_MB_PRESSED) {
+              if (button->data.OnMouseDown != nullptr) button->data.OnMouseDown();
+            } else if (params->LEFT_MB_RELEASED) {
+              if (button->data.OnMouseUp != nullptr) button->data.OnMouseUp();
+            }
+          }
+        } else {
+          if (button->data.hovered) {
+            button->data.hovered = false;
+            if (button->data.OnMouseExit != nullptr) button->data.OnMouseExit();
+          }
+        }
+      }
+
+      return true;
     }
 
     void ProcessPlayerInput(struct Params *params, Entity *player) {
