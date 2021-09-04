@@ -1,52 +1,52 @@
-#ifndef MATH
-#define MATH
+#ifndef GAME_MATH
+#define GAME_MATH
 
+#include <iostream>
 #include <cmath>
 
-//class Vector2 {
-//public:
-//    float x;
-//    float y;
-//
-//    Vector2(float x, float y) {
-//        this->x = x;
-//        this->y = y;
-//    }
-//};
-
-template<unsigned int I>
+template<typename T, unsigned int I>
 struct scalar_swizzle {
-    float v[1];
-    float &operator=(const float x) {
+    T v[1];
+    T &operator=(const T x) {
         v[I] = x;
         return v[I];
     }
 
-    operator float() const {
+    operator T() const {
         return v[I];
     }
 
-    float operator++(int) {
+    T operator++(int) {
         return v[I]++;
     }
 
-    float operator++() {
+    T operator++() {
         return ++v[I];
     }
 
-    float operator--(int) {
+    T operator--(int) {
         return v[I]--;
     }
 
-    float operator--() {
+    T operator--() {
         return --v[I];
+    }
+
+    scalar_swizzle& operator+=(const scalar_swizzle& right) {
+      v[I] += right;
+      return *this;
+    }
+
+    friend scalar_swizzle operator+(scalar_swizzle left, const scalar_swizzle& right) {
+      left += right;
+      return left;
     }
 };
 
 // We use a vec_type in a template instead of forward declartions to prevent erros in some compilers.
-template<typename vec_type, unsigned int A, unsigned int B>
+template<typename vec_type, typename T, unsigned int A, unsigned int B>
 struct vec2_swizzle {
-    float d[2];
+    T d[2];
     vec_type operator=(const vec_type& vec) {
         return vec_type(d[A] = vec.x, d[B] = vec.y);
     }
@@ -56,31 +56,45 @@ struct vec2_swizzle {
     }
 };
 
+template<typename T>
 struct vec2 {
     union {
-        float d[2];
-        scalar_swizzle<0> x, i;
-        scalar_swizzle<1> y, j;
+        T d[2];
+        scalar_swizzle<T, 0> x, i;
+        scalar_swizzle<T, 1> y, j;
 
-        vec2_swizzle<vec2, 0, 0> xx;
-        vec2_swizzle<vec2, 0, 1> xy;
-        vec2_swizzle<vec2, 1, 0> yx;
-        vec2_swizzle<vec2, 1, 1> yy;
+        vec2_swizzle<vec2, T, 0, 0> xx;
+        vec2_swizzle<vec2, T, 0, 1> xy;
+        vec2_swizzle<vec2, T, 1, 0> yx;
+        vec2_swizzle<vec2, T, 1, 1> yy;
     };
 
-    vec2() {}
+    vec2() {
+      x = y = 0;
+    }
 
-    vec2(float all) {
+    vec2(T all) {
         x = y = all;
     }
 
-    vec2(float a, float b) {
+    vec2(T a, T b) {
         x = a;
         y = b;
     }
+
+    vec2& operator+=(const vec2& right) {
+      x += right.x;
+      y += right.y;
+      return *this;
+    }
+
+    friend vec2 operator+(vec2 left, const vec2& right) {
+      left += right;
+      return left;
+    }
 };
 
-inline std::ostream& operator<<(std::ostream &os, vec2 vec) {
+inline std::ostream& operator<<(std::ostream &os, vec2<float> vec) {
     os << "(" << vec.x << ", " << vec.y << ")";
     return os;
 }
